@@ -1,5 +1,5 @@
 <template>
-  <td :class='status'></td>
+  <td :class='state' @click.right.prevent='rightClicked'></td>
 </template>
 
 <script>
@@ -7,12 +7,15 @@ export default {
   props: {
     row: Number,
     column: Number,
-    status: String,
+    mined: Boolean,
+    state: String,
   },
-  data: function() {
-    return {
-      mined: Math.random() * 6 > 5,
-    };
+  methods: {
+    rightClicked: function() {
+      console.log(this.state);
+      this.$emit('tileRightClicked', this);
+      console.log(this.state);
+    }
   }
 };
 </script>

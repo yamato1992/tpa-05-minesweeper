@@ -4,7 +4,9 @@
     <table class="minesweeper">
       <tr v-for='(row, rowIndex) in tiles' :key='rowIndex'>
         <Tile v-for='(column, columnIndex) in row' :key='columnIndex'
-          :row='rowIndex' :column='columnIndex' :status='column'>
+          :row='rowIndex' :column='columnIndex' 
+          :mined='column.mined' :state='column.state'
+          @tileRightClicked='setFlag'>
         </Tile>
       </tr>
     </table>
@@ -21,7 +23,7 @@ export default {
   name: 'App',
   data: function() {
     return {
-      tiles: new Array(ROW_SIZE).fill(new Array(COLUMN_SIZE).fill('unopened')),
+      tiles: new Array(),
     };
   },
   methods: {
@@ -29,12 +31,48 @@ export default {
       this.initializeTiles();
     },
     initializeTiles: function() {
-      this.tiles = new Array(ROW_SIZE).fill(new Array(COLUMN_SIZE).fill('unopened'));
+      this.tiles = new Array(ROW_SIZE).fill(new Array(COLUMN_SIZE));
+      for (let i = 0; i < ROW_SIZE; i += 1) {
+        for (let j = 0; j < COLUMN_SIZE; j += 1) {
+          this.tiles[i][j] = {
+            mined: this.setMine(),
+            state: 'unopened',
+          };
+        }
+      }
+    },
+    setMine: function() {
+      return Math.random() * 6 > 5;
+    },
+    /**
+     * open a tile
+     * @function
+     * @param {Object} tile
+     * @return {undefined}
+     */
+    openTile: function(tile) {
+      // if the tiles is mined
+      //  this.$set(this.tiles[tile.row][tile.column], 'state', 'mine');
+      //  reveal all other tiles
+      // if its not mined
+      //  collect information on its neighbors
+      //  count how many mines surround the tile
+      //  if there are mines
+      //    reveal the numbers of mines that surround the tile
+      //  if there are no mines
+      //      this.$set(this.tiles[tile.row][tile.column], 'state', 'opened');
+      //    (for each neighbor)
+      //      (if the neighbor has not been opened yet)
+      //        (open the neighbor)
+    },
+    setFlag: function(tile) {
+      this.$set(this.tiles[tile.row][tile.column], 'state', 'flagged');
+      console.log(this.tiles[tile.row][tile.column]);
     },
   },
   components: {
     Tile,
-  }
+  },
 };
 </script>
 
