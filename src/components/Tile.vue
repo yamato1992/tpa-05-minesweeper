@@ -1,10 +1,19 @@
 <template>
-  <td class="unopened"></td>
+  <td :class='status'></td>
 </template>
 
 <script>
 export default {
-  
+  props: {
+    row: Number,
+    column: Number,
+    status: String,
+  },
+  data: function() {
+    return {
+      mined: Math.random() * 6 > 5,
+    };
+  }
 };
 </script>
 

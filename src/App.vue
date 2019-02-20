@@ -3,7 +3,9 @@
     <button @click='startGame'>Start Game</button>
     <table class="minesweeper">
       <tr v-for='(row, rowIndex) in tiles' :key='rowIndex'>
-        <Tile v-for='(column, columnIndex) in row' :key='columnIndex'></Tile>
+        <Tile v-for='(column, columnIndex) in row' :key='columnIndex'
+          :row='rowIndex' :column='columnIndex' :status='column'>
+        </Tile>
       </tr>
     </table>
   </div>
@@ -19,7 +21,7 @@ export default {
   name: 'App',
   data: function() {
     return {
-      tiles: new Array(ROW_SIZE).fill(new Array(COLUMN_SIZE)),
+      tiles: new Array(ROW_SIZE).fill(new Array(COLUMN_SIZE).fill('unopened')),
     };
   },
   methods: {
@@ -27,7 +29,7 @@ export default {
       this.initializeTiles();
     },
     initializeTiles: function() {
-      this.tiles = new Array(ROW_SIZE).fill(new Array(COLUMN_SIZE));
+      this.tiles = new Array(ROW_SIZE).fill(new Array(COLUMN_SIZE).fill('unopened'));
     },
   },
   components: {
