@@ -60,11 +60,11 @@ export default {
       } else {
         const neighborTiles = this.collectNeighborsInfo(tile);
         const countMines = this.countNeighborsMines(neighborTiles);
+        console.log(countMines);
         if (countMines > 0) {
-          this.tiles[tile.row][tile.column].state = 'opened';
+          this.tiles[tile.row][tile.column].state = `mine-neighbor-${countMines}`;
         } else {
-          //  if there are no mines
-          //    this.tiles[tile.row][tile.column].state = 'opened';
+          this.tiles[tile.row][tile.column].state = 'opended';
           //    (for each neighbor)
           //      (if the neighbor has not been opened yet)
           //        (open the neighbor)
@@ -94,24 +94,14 @@ export default {
       });
       return neighbors;
     },
-
-    /**
-     * count how many mines surrond the tile
-     * @function
-     * @param {Array} neighborTiles
-     * @return {Number} countMines
-     */
-    countNeighborsMines: function() {
-      // count how many mines surrond the tile
+    countNeighborsMines: function(neighbors) {
+      let mineCount = 0;
+      neighbors.forEach((neighbor) => {
+        mineCount += neighbor.mined ? 1 : 0;
+      });
+      return mineCount;
     },
-
-    /**
-     * reval other tiles
-     * @function
-     * @param {Object} tile
-     * @return {undefine}
-     */
-    revalOtherTiles: function(tile) {
+    showAll: function() {
       // reval other tiles
     },
     setFlag: function(tile) {
