@@ -12,9 +12,7 @@ export default {
   },
   methods: {
     rightClicked: function() {
-      console.log(this.state);
       this.$emit('tileRightClicked', this);
-      console.log(this.state);
     }
   }
 };

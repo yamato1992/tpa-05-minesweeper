@@ -23,7 +23,7 @@ export default {
   name: 'App',
   data: function() {
     return {
-      tiles: new Array(),
+      tiles: [],
     };
   },
   methods: {
@@ -31,14 +31,17 @@ export default {
       this.initializeTiles();
     },
     initializeTiles: function() {
-      this.tiles = new Array(ROW_SIZE).fill(new Array(COLUMN_SIZE));
-      for (let i = 0; i < ROW_SIZE; i += 1) {
-        for (let j = 0; j < COLUMN_SIZE; j += 1) {
-          this.tiles[i][j] = {
+      this.tiles = [];
+      for (let rowIndex = 0; rowIndex < ROW_SIZE; rowIndex += 1) {
+        let row = [];
+        for (let columnIndex = 0; columnIndex < COLUMN_SIZE; columnIndex += 1) {
+          let tile = {
             mined: this.setMine(),
             state: 'unopened',
           };
+          row.push(tile);
         }
+        this.tiles.push(row);
       }
     },
     setMine: function() {
@@ -66,8 +69,7 @@ export default {
       //        (open the neighbor)
     },
     setFlag: function(tile) {
-      this.$set(this.tiles[tile.row][tile.column], 'state', 'flagged');
-      console.log(this.tiles[tile.row][tile.column]);
+      this.tiles[tile.row][tile.column].state = 'flagged';
     },
   },
   components: {
