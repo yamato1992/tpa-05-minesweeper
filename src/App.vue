@@ -50,16 +50,17 @@ export default {
       return Math.random() * 6 > 5;
     },
     openTile: function(tile) {
-      if (this.tiles[tile.row][tile.column].mined) {
-        this.tiles[tile.row][tile.column].state = 'mine';
+      const tileObj = this.tiles[tile.row][tile.column];
+      if (tileObj.mined) {
+        tileObj.state = 'mine';
         this.showAll();
       } else {
         const neighbors = this.collectNeighborsInfo(tile.row, tile.column);
         const countMines = this.countNeighborsMines(neighbors);
         if (countMines > 0) {
-          this.tiles[tile.row][tile.column].state = `mine-neighbor-${countMines}`;
+          tileObj.state = `mine-neighbor-${countMines}`;
         } else {
-          this.tiles[tile.row][tile.column].state = 'opended';
+          tileObj.state = 'opended';
           neighbors.forEach((neighbor) => {
             if (neighbor.state === 'unopened' && !neighbor.mined) {
               this.openTile(neighbor);
@@ -115,7 +116,7 @@ export default {
       });
     },
     setFlag: function(tile) {
-      this.tiles[tile.row][tile.column].state = tile.state === 'flagged' ? 'unopened' : 'flagged';
+      this.tiles[tile.row][tile.column].state = tile.state === 'unopened' ? 'flagged' : 'unopened';
     },
   },
   components: {
