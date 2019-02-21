@@ -1,10 +1,20 @@
 <template>
-  <td class="unopened"></td>
+  <td :class='state' @click.right.prevent='rightClicked'></td>
 </template>
 
 <script>
 export default {
-  
+  props: {
+    row: Number,
+    column: Number,
+    mined: Boolean,
+    state: String,
+  },
+  methods: {
+    rightClicked: function() {
+      this.$emit('tileRightClicked', this);
+    }
+  }
 };
 </script>
 
