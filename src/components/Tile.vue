@@ -1,5 +1,5 @@
 <template>
-  <td :class='state' @click.right.prevent='rightClicked'></td>
+  <td :class='state' @click.right.prevent='rightClicked' @click.left.prevent='leftClicked'></td>
 </template>
 
 <script>
@@ -13,6 +13,9 @@ export default {
   methods: {
     rightClicked: function() {
       this.$emit('tileRightClicked', this);
+    },
+    leftClicked: function() {
+      this.$emit('tileLeftClicked', this);
     }
   }
 };

@@ -6,7 +6,7 @@
         <Tile v-for='(column, columnIndex) in row' :key='columnIndex'
           :row='rowIndex' :column='columnIndex' 
           :mined='column.mined' :state='column.state'
-          @tileRightClicked='setFlag'>
+          @tileRightClicked='setFlag' @tileLeftClicked='openTile'>
         </Tile>
       </tr>
     </table>
@@ -58,13 +58,13 @@ export default {
         this.tiles[tile.row][tile.column].state = 'mine';
         // reveal all other tiles
       } else {
-        const neighborTiles = collectNeighborsTileInfo(tile);
-        const countMines = countNeighborsMines(neighborTiles);
+        const neighborTiles = this.collectNeighborsInfo(tile);
+        const countMines = this.countNeighborsMines(neighborTiles);
+        console.log(countMines);
         if (countMines > 0) {
-          this.tiles[tile.row][tile.column].state = 'opened';
+          this.tiles[tile.row][tile.column].state = `mine-neighbor-${countMines}`;
         } else {
-          //  if there are no mines
-          //    this.tiles[tile.row][tile.column].state = 'opened';
+          this.tiles[tile.row][tile.column].state = 'opended';
           //    (for each neighbor)
           //      (if the neighbor has not been opened yet)
           //        (open the neighbor)
@@ -72,33 +72,36 @@ export default {
       }
     },
 
-    /**
-     * collect information on its neighbors
-     * @function 
-     * @param {Object} tile
-     * @return {Object} neighborTiles
-     */
-    collectNeighborsTileInfo: function(tile) {
-      // collect information on its neighbors
+    collectNeighborsInfo: function(tile) {
+      let neighbors = [];
+      const patterns = [
+        {row: 0, column: 1},
+        {row: 0, column: -1},
+        {row: 1, column: 0},
+        {row: 1, column: 1},
+        {row: 1, column: -1},
+        {row: -1, column: 0},
+        {row: -1, column: 1},
+        {row: -1, column: -1},
+      ];
+      patterns.forEach((pattern) => {
+        const neighborRowIndex = tile.row + pattern.row;
+        const neighborColumnIndex = tile.column + pattern.column;
+        if (neighborRowIndex >= 0 && neighborRowIndex < ROW_SIZE &&
+          neighborColumnIndex >= 0 && neighborColumnIndex < COLUMN_SIZE) {
+          neighbors.push(this.tiles[neighborRowIndex][neighborColumnIndex]);
+        }
+      });
+      return neighbors;
     },
-
-    /**
-     * count how many mines surrond the tile
-     * @function
-     * @param {Array} neighborTiles
-     * @return {Number} countMines
-     */
-    countNeighborsMines: function() {
-      // count how many mines surrond the tile
+    countNeighborsMines: function(neighbors) {
+      let mineCount = 0;
+      neighbors.forEach((neighbor) => {
+        mineCount += neighbor.mined ? 1 : 0;
+      });
+      return mineCount;
     },
-
-    /**
-     * reval other tiles
-     * @function
-     * @param {Object} tile
-     * @return {undefine}
-     */
-    revalOtherTiles: function(tile) {
+    showAll: function() {
       // reval other tiles
     },
     setFlag: function(tile) {
