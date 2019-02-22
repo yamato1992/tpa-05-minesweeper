@@ -116,7 +116,17 @@ export default {
       });
     },
     setFlag: function(tile) {
-      this.tiles[tile.row][tile.column].state = tile.state === 'unopened' ? 'flagged' : 'unopened';
+      let clickedTile = this.tiles[tile.row][tile.column];
+      switch(clickedTile.state) {
+      case 'unopened':
+        clickedTile.state = 'flagged';
+        break;
+      case 'flagged':
+        clickedTile.state = 'unopened';
+        break;
+      default:
+        break;
+      }
     },
   },
   components: {
