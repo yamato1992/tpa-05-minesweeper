@@ -3,9 +3,9 @@
     <button @click='startGame'>Start Game</button>
     <table class="minesweeper">
       <tr v-for='(row, rowIndex) in tiles' :key='rowIndex'>
-        <Tile v-for='(column, columnIndex) in row' :key='columnIndex'
-          :row='rowIndex' :column='columnIndex' 
-          :mined='column.mined' :state='column.state'
+        <Tile v-for='(tile, columnIndex) in row' :key='columnIndex'
+          :row='tile.row' :column='tile.column' 
+          :mined='tile.mined' :state='tile.state'
           @tileRightClicked='setFlag' @tileLeftClicked='openTile'>
         </Tile>
       </tr>
@@ -14,8 +14,8 @@
 </template>
 
 <script>
-const ROW_SIZE = 5;
-const COLUMN_SIZE = 9;
+const ROW_SIZE = 10;
+const COLUMN_SIZE = 19;
 
 import Tile from './components/Tile';
 
@@ -36,6 +36,8 @@ export default {
         let row = [];
         for (let columnIndex = 0; columnIndex < COLUMN_SIZE; columnIndex += 1) {
           let tile = {
+            row: rowIndex,
+            column: columnIndex,
             mined: this.setMine(),
             state: 'unopened',
           };
@@ -48,19 +50,20 @@ export default {
       return Math.random() * 6 > 5;
     },
     openTile: function(tile) {
-      if (this.tiles[tile.row][tile.column].mined) {
-        this.tiles[tile.row][tile.column].state = 'mine';
+      const tileObj = this.tiles[tile.row][tile.column];
+      if (tileObj.mined) {
+        tileObj.state = 'mine';
         this.showAll();
       } else {
         const neighbors = this.collectNeighborsInfo(tile.row, tile.column);
         const countMines = this.countNeighborsMines(neighbors);
         if (countMines > 0) {
-          this.tiles[tile.row][tile.column].state = `mine-neighbor-${countMines}`;
+          tileObj.state = `mine-neighbor-${countMines}`;
         } else {
-          this.tiles[tile.row][tile.column].state = 'opended';
+          tileObj.state = 'opended';
           neighbors.forEach((neighbor) => {
-            if (neighbor.state === 'unopened') {
-              // open neighor tile with recursive function
+            if (neighbor.state === 'unopened' && !neighbor.mined) {
+              this.openTile(neighbor);
             }
           });
         }
@@ -113,7 +116,17 @@ export default {
       });
     },
     setFlag: function(tile) {
-      this.tiles[tile.row][tile.column].state = 'flagged';
+      let clickedTile = this.tiles[tile.row][tile.column];
+      switch(clickedTile.state) {
+      case 'unopened':
+        clickedTile.state = 'flagged';
+        break;
+      case 'flagged':
+        clickedTile.state = 'unopened';
+        break;
+      default:
+        break;
+      }
     },
   },
   components: {
